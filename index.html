@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        #searchBox {
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #searchButton {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .mealStyle {
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mealStyle img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+        function connect() {
+            var searchTerm = document.getElementById("searchBox").value;
+            var url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`;
+            console.log(url);
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => display(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function display(data) {
+            var allMeals = data.meals;
+            console.log(allMeals);
+
+            var oldContent = document.getElementById("container");
+            oldContent.textContent = "";
+
+            for (var i = 0; i <Math.min(allMeals.length, 5); i++) {
+                var newDiv = document.createElement("div");
+                newDiv.innerHTML = `Meal Name: ${allMeals[i].strMeal}  <br>
+                                    Meal ID: ${allMeals[i].idMeal}<br>
+                                    <img src="${allMeals[i].strMealThumb}"> <br> <br>
+                                    Cooking Instructions: <p>
+   
+                                        ${allMeals[i].strInstructions}  </p> <br>
+                                        <a href="${allMeals[i].strYoutube}" target="_blank" class="videoLink">Watch Video</a><br>
+                                        `
+
+                newDiv.classList.add("mealStyle");
+                oldContent.appendChild(newDiv);
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Meal Explorer</h1>
+    </header>
+    <section>
+        <input type="text" id="searchBox" placeholder="Search for meals by letter">
+        <button id="searchButton" onclick="connect()">Search</button>
+        <div id="container"></div>
+    </section>
+</body>
+</html>
